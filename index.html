@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz z pętlą poprawiania błędów</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #8e44ad;
+            margin-bottom: 25px;
+        }
+        .question {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #eaeaea;
+        }
+        .question p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        label {
+            display: block;
+            margin: 6px 0;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 4px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            width: 100%;
+            max-width: 450px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-top: 5px;
+            display: block;
+            font-size: 15px;
+        }
+        .correct-ans {
+            background-color: #d4edda !important;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect-ans {
+            background-color: #f8d7da !important;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .feedback {
+            font-size: 14px;
+            margin-top: 8px;
+            font-weight: bold;
+        }
+        button.submit-btn {
+            display: block;
+            width: 100%;
+            background-color: #8e44ad;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 30px;
+            transition: background 0.3s;
+        }
+        button.submit-btn:hover {
+            background-color: #732d91;
+        }
+        #result-box {
+            margin-top: 25px;
+            padding: 20px;
+            background: #eef2f3;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2c3e50;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Kartkówka: Bazy Danych i MS Access</h1>
+    <p style="text-align: center; color: #666; margin-bottom: 25px;">Pytania na zmianę: Do wpisania oraz trudne ABC. Możesz poprawiać błędy w nieskończoność!</p>
+
+    <form id="quizForm">
+
+        <!-- 1. DO WPISANIA -->
+        <div class="question" id="box-q1">
+            <p>1. Baza danych (Wpisz odpowiedź)</p>
+            <label>Czym jest baza danych?</label>
+            <input type="text" id="q1" placeholder="Wpisz definicję...">
+            <div class="feedback" id="fb-q1"></div>
+        </div>
+
+        <!-- 2. ABC -->
+        <div class="question" id="box-q2">
+            <p>2. System zarządzania bazą danych (Podchwytliwe ABC)</p>
+            <label><input type="radio" name="q2" value="a"> A) To fizyczny dysk twardy, na którym zapisane są pliki z tabelami.</label>
+            <label><input type="radio" name="q2" value="b"> B) To oprogramowanie pośredniczące, które pozwala na tworzenie, modyfikowanie i zarządzanie bazą danych.</label>
+            <label><input type="radio" name="q2" value="c"> C) To użytkownik, który wpisuje zapytania do systemu.</label>
+            <div class="feedback" id="fb-q2"></div>
+        </div>
+
+        <!-- 3. DO WPISANIA -->
+        <div class="question" id="box-q3">
+            <p>3. System baz danych (Wpisz odpowiedź)</p>
+            <label>Co wchodzi w skład pojęcia "System baz danych"?</label>
+            <input type="text" id="q3" placeholder="Wpisz elementy systemu...">
+            <div class="feedback" id="fb-q3"></div>
+        </div>
+
+        <!-- 4. ABC -->
+        <div class="question" id="box-q4">
+            <p>4. Założyciel modela relacyjnych baz danych (Podchwytliwe ABC)</p>
+            <label><input type="radio" name="q4" value="a"> A) Bill Gates w latach 80.</label>
+            <label><input type="radio" name="q4" value="b"> B) Edgar F. Codd w 1970 roku.</label>
+            <label><input type="radio" name="q4" value="c"> C) Charles Bachman w latach 60.</label>
+            <div class="feedback" id="fb-q4"></div>
+        </div>
+
+        <!-- 5. DO WPISANIA -->
+        <div class="question" id="box-q5">
+            <p>5. Opisz relacyjną bazę danych (Wpisz odpowiedź)</p>
+            <label>Na czym polega relacyjna baza danych?</label>
+            <input type="text" id="q5" placeholder="Wpisz opis...">
+            <div class="feedback" id="fb-q5"></div>
+        </div>
+
+        <!-- 6. ABC -->
+        <div class="question" id="box-q6">
+            <p>6. Klucz / Opisz klucz (Podchwytliwe ABC)</p>
+            <label><input type="radio" name="q6" value="a"> A) Ponieważ imiona i nazwiska mogą się powtarzać, co narusza zasadę unikalności rekordów.</label>
+            <label><input type="radio" name="q6" value="b"> B) Ponieważ programy bazodanowe całkowicie blokują wpisywanie liter w kolumnach kluczy.</label>
+            <label><input type="radio" name="q6" value="c"> C) Ponieważ klucze mogą składać się wyłącznie z liczb parzystych.</label>
+            <div class="feedback" id="fb-q6"></div>
+        </div>
+
+        <!-- 7. DO WPISANIA -->
+        <div class="question" id="box-q7">
+            <p>7. Opisz tabelę co to (Wpisz odpowiedź)</p>
+            <label>Czym jest tabela w bazie danych?</label>
+            <input type="text" id="q7" placeholder="Wpisz definicję tabeli...">
+            <div class="feedback" id="fb-q7"></div>
+        </div>
+
+        <!-- 8. ABC -->
+        <div class="question" id="box-q8">
+            <p>8. Rekord (Podchwytliwe ABC)</p>
+            <label><input type="radio" name="q8" value="a"> A) Pojedynczą kolumnę przechowującą ten sam typ danych.</label>
+            <label><input type="radio" name="q8" value="b"> B) Całą bazę danych spakowaną do jednego pliku.</label>
+            <label><input type="radio" name="q8" value="c"> C) Pojedynczy wiersz zawierający zestaw informacji o konkretnym obiekcie.</label>
+            <div class="feedback" id="fb-q8"></div>
+        </div>
+
+        <!-- 9. DO WPISANIA -->
+        <div class="question" id="box-q9">
+            <p>9. Kwerenda i 2 nazwa (Wpisz odpowiedź)</p>
+            <label>Podaj drugą nazwę kwerendy i do czego służy:</label>
+            <input type="text" id="q9" placeholder="np. Zapytanie, do szukania...">
+            <div class="feedback" id="fb-q9"></div>
+        </div>
+
+        <!-- 10. ABC -->
+        <div class="question" id="box-q10">
+            <p>10. Formularz (Podchwytliwe ABC)</p>
+            <label><input type="radio" name="q10" value="a"> A) Formularz to graficzny interfejs ułatwiający wprowadzanie i przeglądanie danych, a tabela to fizyczny magazyn tych danych.</label>
+            <label><input type="radio" name="q10" value="b"> B) Formularz służy do automatycznego drukowania raportów, a tabela do usuwania błędów.</label>
+            <label><input type="radio" name="q10" value="c"> C) Niczym się nie różnią – to synonimy określające ten sam obiekt.</label>
+            <div class="feedback" id="fb-q10"></div>
+        </div>
+
+        <!-- 11. DO WPISANIA -->
+        <div class="question" id="box-q11">
+            <p>11. Typy obiektów (Wpisz odpowiedź)</p>
+            <label>Wymień główne obiekty występujące w MS Access:</label>
+            <input type="text" id="q11" placeholder="Wymień obiekty...">
+            <div class="feedback" id="fb-q11"></div>
+        </div>
+
+        <!-- 12. ABC -->
+        <div class="question" id="box-q12">
+            <p>12. Typy relacji – 1:1, 1:N, N:M (Podchwytliwe ABC)</p>
+            <label><input type="radio" name="q12" value="a"> A) Ponieważ bazy relacyjne nie potrafią fizycznie powiązać dwóch tabel w ten sposób bez rozbicia ich na dwie relacje 1:N.</label>
+            <label><input type="radio" name="q12" value="b"> B) Ponieważ wymaga tego licencja oprogramowania MS Access.</label>
+            <label><input type="radio" name="q12" value="c"> C) Tabela łącząca służy wyłącznie do celów wizualnych i nie ma znaczenia dla logiki.</label>
+            <div class="feedback" id="fb-q12"></div>
+        </div>
+
+        <button type="button" id="actionBtn" class="submit-btn" onclick="checkQuiz()">Sprawdź wyniki</button>
+    </form>
+
+    <div id="result-box"></div>
+</div>
+
+<script>
+    const correctTexts = {
+        q1: "Uporządkowany zbiór danych.",
+        q3: "Baza danych, SZBD, sprzęt komputerowy oraz użytkownicy.",
+        q5: "Baza, w której dane są przechowywane w tabelach powiązanych relacjami.",
+        q7: "Obiekt przechowujący dane w układzie wierszy i kolumn.",
+        q9: "Druga nazwa to Zapytanie; służy do wyszukiwania, filtrowania i modyfikowania danych.",
+        q11: "Tabele, kwerendy, formularze, raporty, makra i moduły."
+    };
+
+    const radioAnswers = {
+        q2: 'b',
+        q4: 'b',
+        q6: 'a',
+        q8: 'c',
+        q10: 'a',
+        q12: 'a'
+    };
+
+    function checkQuiz() {
+        let score = 0;
+        const total = 12;
+
+        // Sprawdzanie ABC
+        for (let q in radioAnswers) {
+            let box = document.getElementById("box-" + q);
+            let fb = document.getElementById("fb-" + q);
+            let selected = document.querySelector(`input[name="${q}"]:checked`);
+            let labels = box.querySelectorAll("label");
+
+            labels.forEach(l => l.classList.remove("correct-ans", "incorrect-ans"));
+
+            if (selected) {
+                let val = selected.value;
+                let correctVal = radioAnswers[q];
+                let selectedLabel = selected.parentElement;
+
+                if (val === correctVal) {
+                    score++;
+                    selectedLabel.classList.add("correct-ans");
+                    fb.style.color = "green";
+                    fb.innerText = "✓ Dobrze!";
+                } else {
+                    selectedLabel.classList.add("incorrect-ans");
+                    let correctInput = box.querySelector(`input[value="${correctVal}"]`);
+                    correctInput.parentElement.classList.add("correct-ans");
+                    fb.style.color = "red";
+                    fb.innerText = "✕ Błąd! Prawidłowa odpowiedź została podświetlona na zielono.";
+                }
+            } else {
+                let correctInput = box.querySelector(`input[value="${radioAnswers[q]}"]`);
+                correctInput.parentElement.classList.add("correct-ans");
+                fb.style.color = "red";
+                fb.innerText = "✕ Brak odpowiedzi. Prawidłowa odpowiedź podświetlona na zielono.";
+            }
+        }
+
+        // Sprawdzanie pytań tekstowych
+        const textChecks = ['q1', 'q3', 'q5', 'q7', 'q9', 'q11'];
+        
+        textChecks.forEach(qId => {
+            let input = document.getElementById(qId);
+            let box = document.getElementById("box-" + qId);
+            let fb = document.getElementById("fb-" + qId);
+            input.classList.remove("correct-ans", "incorrect-ans");
+
+            let val = input.value.trim().toLowerCase();
+            let isCorrect = false;
+
+            if (qId === 'q1' && (val.includes("zbiór") || val.includes("danych") || val.includes("uporządkowany"))) isCorrect = true;
+            if (qId === 'q3' && (val.includes("danych") && (val.includes("sprzęt") || val.includes("program") || val.includes("użytkownik")))) isCorrect = true;
+            if (qId === 'q5' && (val.includes("tabel") || val.includes("powiąza") || val.includes("relac"))) isCorrect = true;
+            if (qId === 'q7' && (val.includes("wiersz") || val.includes("kolumn") || val.includes("dane"))) isCorrect = true;
+            if (qId === 'q9' && (val.includes("zapytan") || val.includes("szuka") || val.includes("filtrow"))) isCorrect = true;
+            if (qId === 'q11' && (val.includes("tabel") || val.includes("kwerend") || val.includes("formularz"))) isCorrect = true;
+
+            if (val !== "" && isCorrect) {
+                score++;
+                input.classList.add("correct-ans");
+                fb.style.color = "green";
+                fb.innerText = "✓ Dobrze zaliczone!";
+            } else {
+                input.classList.add("incorrect-ans");
+                fb.style.color = "red";
+                fb.innerHTML = `✕ Błąd. Prawidłowa odpowiedź powinna brzmieć:<br><b>${correctTexts[qId]}</b>`;
+            }
+        });
+
+        // Wynik i obsługa przycisku "Popraw błędy"
+        let percent = Math.round((score / total) * 100);
+        let resultBox = document.getElementById("result-box");
+        resultBox.style.display = "block";
+        resultBox.innerHTML = `Twój wynik: ${score} / ${total} (${percent}%)`;
+        
+        let actionBtn = document.getElementById("actionBtn");
+
+        if (score === total) {
+            resultBox.innerHTML += "<br>🎉 Rewelacja! Wszystko idealnie rozwiązane!";
+            actionBtn.innerText = "Gratulacje! Rozwiązano bezbłędnie";
+            actionBtn.style.backgroundColor = "#27ae60";
+        } else {
+            resultBox.innerHTML += "<br>💡 Masz jeszcze błędy. Popraw je w polach powyżej i kliknij przycisk ponownie!";
+            actionBtn.innerText = "Popraw błędy i sprawdź ponownie";
+            actionBtn.style.backgroundColor = "#e67e22";
+        }
+
+        resultBox.scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+</body>
+  </html>
+  
